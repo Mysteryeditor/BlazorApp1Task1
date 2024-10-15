@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using BlazorApp1Task1.Authentication
+@inject CustomAuthStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BlazorApp1Task1</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -24,6 +27,23 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
+        <div class="nav-item px-3">
+         <AuthorizeView>
+                <Authorized><span style="color:white">Hello Admin</span>
+                    <button class="btn btn-danger" @onclick="LogoutAsync">Logout</button>
+                </Authorized>
+             <NotAuthorized>
+                    <button @onclick="LoginAsync">
+Login
+                 </button>
+             </NotAuthorized>
+             <Authorizing>
+                 <span style="color:white">Checking auth state</span>
+             </Authorizing>
+         </AuthorizeView>
+        </div>
+
+
     </nav>
 </div>
 
@@ -35,5 +55,15 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task LoginAsync()
+    {
+        await AuthStateProvider.LoginAsync("dum", "dumm");
+    }
+    private async Task LogoutAsync()
+    {
+        await AuthStateProvider.LogoutAsync();
+        Navigation.NavigateTo("/login");
     }
 }
